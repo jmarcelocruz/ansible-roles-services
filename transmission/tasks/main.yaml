@@ -1,0 +1,9 @@
+- name: Install transmission
+  ansible.builtin.apt:
+    package:
+      - transmission-daemon
+- name: Enable transmission
+  ansible.builtin.service:
+    name: transmission-daemon
+    state: started
+    enabled: true
