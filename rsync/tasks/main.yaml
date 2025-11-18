@@ -1,0 +1,9 @@
+- name: Install rsync
+  ansible.builtin.apt:
+    package:
+      - rsync
+- name: Enable rsync
+  ansible.builtin.service:
+    name: rsync
+    state: started
+    enabled: true
