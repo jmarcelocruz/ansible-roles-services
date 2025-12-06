@@ -1,0 +1,42 @@
+- name: Get OS
+  ansible.builtin.shell:
+    cmd: awk -F'=' '/^ID=/{ print $NF }' /etc/os-release
+  register: os_output
+  changed_when: false
+- name: Set OS
+  ansible.builtin.set_fact:
+    repo_os: "{{ os_output.stdout }}"
+- name: Get OS release
+  ansible.builtin.shell:
+    cmd: awk -F'=' '/^VERSION_CODENAME=/{ print $NF }' /etc/os-release
+  register: os_release_output
+  changed_when: false
+- name: Set OS release
+  ansible.builtin.set_fact:
+    os_release: "{{ os_release_output.stdout }}"
+- name: Create /etc/apt/keyrings directory
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+- name: Install repository key
+  ansible.builtin.copy:
+    src: etc/apt/keyrings/repo.jellyfin.org.asc
+    dest: /etc/apt/keyrings
+    owner: root
+    mode: 0755
+- name: Install apt repository
+  ansible.builtin.template:
+    src: etc/apt/sources.list.d/jellyfin.sources.j2
+    dest: /etc/apt/sources.list.d/jellyfin.sources
+    mode: "0644"
+- name: Install Jellyfin
+  ansible.builtin.apt:
+    package:
+      - jellyfin
+      - libicu76
+    update_cache: true
+- name: Enable Jellyfin
+  ansible.builtin.service:
+    name: jellyfin
+    enabled: true
+    state: started
