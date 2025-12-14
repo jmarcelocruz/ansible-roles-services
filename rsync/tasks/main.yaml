@@ -2,6 +2,22 @@
   ansible.builtin.apt:
     package:
       - rsync
+- name: Create /etc/rsyncd.conf.d directory
+  ansible.builtin.file:
+    path: /etc/rsyncd.conf.d
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+- name: Write rsync configuration
+  notify:
+    - Reload rsync
+  ansible.builtin.template:
+    src: etc/rsyncd.conf.j2
+    dest: /etc/rsyncd.conf
+    owner: root
+    group: root
+    mode: "0644"
 - name: Enable rsync
   ansible.builtin.service:
     name: rsync

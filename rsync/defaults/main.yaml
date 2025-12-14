@@ -1,0 +1,6 @@
+services_rsync_global_configuration: |
+  uid = nobody
+  gid = users
+  read only = false
+
+services_rsync_module_configuration: []

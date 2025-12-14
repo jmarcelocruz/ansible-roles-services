@@ -1,0 +1,5 @@
+{{ services_rsync_global_configuration }}
+{% for module_configuration in services_rsync_module_configuration %}
+{{ module_configuration }}
+{% endfor %}
+&include /etc/rsyncd.conf.d
