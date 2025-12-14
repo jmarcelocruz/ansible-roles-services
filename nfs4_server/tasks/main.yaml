@@ -51,3 +51,12 @@
     unit: nfs-server
     enabled: true
     state: started
+- name: Write exports configuration
+  notify:
+    - Reload exports
+  ansible.builtin.template:
+    src: etc/exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: '0644'
