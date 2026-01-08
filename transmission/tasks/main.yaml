@@ -5,5 +5,16 @@
 - name: Enable transmission
   ansible.builtin.service:
     name: transmission-daemon
-    state: started
+    state: stopped
     enabled: true
+- name: Write transmission configuration
+  ansible.builtin.copy:
+    src: etc/transmission-daemon/settings.json
+    dest: /etc/transmission-daemon
+    owner: debian-transmission
+    group: debian-transmission
+    mode: "0644"
+- name: Start transmission
+  ansible.builtin.service:
+    name: transmission-daemon
+    state: started
