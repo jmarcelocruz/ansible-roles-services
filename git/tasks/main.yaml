@@ -1,0 +1,41 @@
+- name: Install git
+  ansible.builtin.apt:
+    package:
+      - git
+      - git-lfs
+    install_recommends: false
+- name: Add git-shell to /etc/shells
+  ansible.builtin.lineinfile:
+    line: /usr/bin/git-shell
+    path: /etc/shells
+    owner: root
+    group: root
+    mode: "0644"
+- name: Create git user
+  ansible.builtin.user:
+    name: git
+    shell: /usr/bin/git-shell
+    home: /var/lib/git
+    system: true
+- name: Create .ssh directory
+  ansible.builtin.file:
+    path: /var/lib/git/.ssh
+    state: directory
+    owner: git
+    group: git
+    mode: "0700"
+- name: Create authorized_keys file
+  ansible.builtin.copy:
+    content: ""
+    dest: /var/lib/git/.ssh/authorized_keys
+    owner: git
+    group: git
+    mode: "0600"
+    force: false
+- name: Create /srv/git directory
+  ansible.builtin.file:
+    path: /srv/git
+    state: directory
+    owner: git
+    group: git
+    mode: "0750"
