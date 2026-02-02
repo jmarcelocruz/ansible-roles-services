@@ -1,0 +1,39 @@
+- name: Install cgit
+  ansible.builtin.apt:
+    package:
+      - cgit
+      - lighttpd
+    install_recommends: false
+- name: Add www-data to git group
+  ansible.builtin.user:
+    name: www-data
+    groups: git
+    append: true
+- name: Enable lighttpd
+  ansible.builtin.service:
+    name: lighttpd
+    state: started
+    enabled: true
+- name: Deploy cgit configuration
+  ansible.builtin.copy:
+    src: etc/cgitrc
+    dest: /etc/cgitrc
+    owner: root
+    group: root
+    mode: "0644"
+- name: Deploy cgit lighttpd configuration
+  notify:
+    - Reload lighttpd
+  ansible.builtin.copy:
+    src: etc/lighttpd/conf-available/99-cgit.conf
+    dest: /etc/lighttpd/conf-available/99-cgit.conf
+    owner: root
+    group: root
+    mode: "0644"
+- name: Enable cgit lighttpd configuration
+  notify:
+    - Reload lighttpd
+  ansible.builtin.file:
+    src: /etc/lighttpd/conf-available/99-cgit.conf
+    dest: /etc/lighttpd/conf-enabled/99-cgit.conf
+    state: link

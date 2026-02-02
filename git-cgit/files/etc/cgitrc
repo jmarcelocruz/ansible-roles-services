@@ -1,0 +1,9 @@
+css=/cgit/cgit.css
+logo=/cgit/cgit.png
+js=/cgit/cgit.js
+favicon=/cgit/favicon.ico
+
+robots=noindex, nofollow
+
+scan-path=/srv/git/
+clone-url=ssh://git@$HTTP_HOST:$CGIT_REPO_PATH
