@@ -1,0 +1,6 @@
+services_wireguard_port: 51820
+services_wireguard_address: 192.168.11.1/24
+services_wireguard_post_up: iptables -A FORWARD -i %i -j ACCEPT; iptables -t nat -A POSTROUTING -o enp1s0 -j MASQUERADE
+services_wireguard_post_down: iptables -D FORWARD -i %i -j ACCEPT; iptables -t nat -D POSTROUTING -o enp1s0 -j MASQUERADE
+services_wireguard_default_peers: []
+services_wireguard_extra_peers: []

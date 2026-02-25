@@ -1,0 +1,49 @@
+- name: Install wireguard
+  ansible.builtin.apt:
+    package:
+      - wireguard
+- name: Generate private key
+  ansible.builtin.shell:
+    cmd: umask 0077 && wg genkey > privatekey
+    chdir: /etc/wireguard
+    creates: /etc/wireguard/privatekey
+- name: Read private key
+  ansible.builtin.command:
+    cmd: cat privatekey
+    chdir: /etc/wireguard
+  register: _services_wireguard_private_key_out
+  changed_when: false
+- name: Set private key fact
+  ansible.builtin.set_fact:
+    _services_wireguard_private_key: "{{ _services_wireguard_private_key_out.stdout }}"
+- name: Generate public key
+  ansible.builtin.shell:
+    cmd: wg pubkey < privatekey > publickey
+    chdir: /etc/wireguard
+    creates: /etc/wireguard/publickey
+- name: Read public key
+  ansible.builtin.command:
+    cmd: cat publickey
+    chdir: /etc/wireguard
+  register: _services_wireguard_public_key_out
+  changed_when: false
+- name: Set public key fact
+  ansible.builtin.set_fact:
+    _services_wireguard_public_key: "{{ _services_wireguard_public_key_out.stdout }}"
+- name: Write wg0 configuration
+  notify:
+    - Reload wg0
+  ansible.builtin.template:
+    src: etc/wireguard/wg0.conf.j2
+    dest: /etc/wireguard/wg0.conf
+    owner: root
+    group: root
+    mode: "0600"
+- name: Enable wg-quick@wg0
+  ansible.builtin.service:
+    name: wg-quick@wg0
+    state: started
+    enabled: true
+- name: Print public key
+  ansible.builtin.debug:
+    var: _services_wireguard_public_key
