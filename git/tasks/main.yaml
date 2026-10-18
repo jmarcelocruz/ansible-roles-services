@@ -17,6 +17,13 @@
     shell: /usr/bin/git-shell
     home: /var/lib/git
     system: true
+- name: Set ownership of git's home directory
+  ansible.builtin.file:
+    path: /var/lib/git
+    state: directory
+    owner: git
+    group: git
+    mode: "0750"
 - name: Create .ssh directory
   ansible.builtin.file:
     path: /var/lib/git/.ssh
