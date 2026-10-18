@@ -5,5 +5,5 @@ favicon=/cgit/favicon.ico
 
 robots=noindex, nofollow
 
-scan-path=/srv/git/
+scan-path=/var/lib/git/
 clone-url=ssh://git@$HTTP_HOST:$CGIT_REPO_PATH
